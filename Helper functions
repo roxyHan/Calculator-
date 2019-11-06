@@ -1,0 +1,34 @@
+# -----------------------------
+#       Helper functions
+# -----------------------------
+
+# Helps find the level of priority of the operation
+# Addition and Subtraction have lower priority than Multiplication and Division
+def priority_order(operator):
+    # if the operation is an addition/subtraction than it has low priority
+    # in evaluating the expression
+    if operator == '+' or operator == '-':
+        return 1
+    elif operator == '*' or operator == '/':
+        return 2
+    else:
+        return 0
+
+
+# Determine the operation to perform given two operands and a sign/operator
+# Computes the given/reduced expression and returns the result
+def determine_operation(first, second, sign):
+    result = 0
+    if sign == '+': 
+        # addition
+        result = first + second
+    if sign == '-':
+        # subtraction
+        result = first - second
+    if sign == '*':
+        # multiplication
+        result = first * second
+    if sign == '/':
+        # division
+        result = first // second
+    return result
