@@ -2,11 +2,16 @@ def main():
     correct_input = False
     while not correct_input:
         expr = input("Please enter the expression you wish to compute: ")
-        correct_input = is_valid(expr)
-        result = evaluate(expr)
-        print("**!! Here is the result of your expression!!**\n" + expr + " = " + str(result))
-        print("\n\nThank you for using our calculator!\n")
-
+        correct_input, ops_total = is_valid(expr)
+        if (correct_input) :
+            possibility, result = evaluate(expr, ops_total)
+            if (possibility):
+                print("**!! Here is the result of your expression!!**\n" + expr + " = " + str(result))
+                print("\n\nThank you for using our calculator!\n")
+            else:
+                correct_input = False
+        else:
+            print("Check the expression entered")
 
 # -----------------------------
 #       Helper functions
@@ -25,7 +30,8 @@ def is_valid(exp):
             return False
     if open_parentheses != close_parentheses:
         return False
-    return True
+
+    return True, total_op
 
 
 # Helps find the level of priority of the operation
@@ -56,15 +62,17 @@ def determine_operation(first, second, sign):
         result = first * second
     if sign == '/':
         # division
-        result = first // second
+        result = first / second
     return result
 
 
 # Function that returns value of
 # expression after evaluation.
-def evaluate(tokens):
+def evaluate(tokens, opsTotal):
     # stack to store integer values.
     values = []
+
+    digitsTotal = 0
 
     # stack to store operators.
     ops = []
@@ -90,6 +98,7 @@ def evaluate(tokens):
                    tokens[i].isdigit()):
                 val = (val * 10) + int(tokens[i])
                 i += 1
+                digitsTotal += 1
 
             values.append(val)
 
@@ -118,26 +127,21 @@ def evaluate(tokens):
             ops.append(tokens[i])
         i += 1
 
+    if opsTotal >= (digitsTotal):
+        print("Error in your expression! It cannot compute")
+        return False, 0
+
+    else:
     # remaining calculation if elements are still present
-    while len(ops) != 0:
-        val2 = values.pop()
-        val1 = values.pop()
-        op = ops.pop()
+        while len(ops) != 0:
+            val2 = values.pop()
+            val1 = values.pop()
+            op = ops.pop()
 
-        values.append(determine_operation(val1, val2, op))
+            values.append(determine_operation(val1, val2, op))
 
-    # return the result
-    return values[-1]
-
-
-# Driver Code
-#
-# if __name__ == "__main__":
-#     print(evaluate("10 + 2 * 6"))
-#     print(evaluate("100 * 2 + 12"))
-#     print(evaluate("100 * ( 2 + 12 )"))
-#     print(evaluate("100 * ( 2 + 12 ) / 14"))
-# print(evaluate("100 * ( 2 + 12 ) / 14)"))
+        # return the result
+        return True, values[-1]
 #
 
 if __name__ == "__main__":
